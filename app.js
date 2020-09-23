@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const pool = mysql.createConnection({
-    host: 'mysqldb.c3pg7tvyvrqq.us-east-1.rds.amazonaws.com',
+    host: 'mysqldb.cwckfvq3f8y2.us-east-2.rds.amazonaws.com',
     user: 'username',
     password: 'password',
     port: 3306
