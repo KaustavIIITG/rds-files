@@ -23,11 +23,14 @@ const pool = mysql.createConnection({
     user: 'username',
     password: 'password',
     port: '3306',
-    database: 'mysqldb'
 });
 
 pool.connect(function(err) {
     if (err) throw err;
+    pool.query('CREATE DATABASE IF NOT EXISTS mysqldb;', function(error, result, fields) {
+        console.log(result);
+    });
+    pool.query('USE mysqldb;');
     pool.query('CREATE TABLE IF NOT EXISTS user(username varchar(100), password varchar(100));', function(error, result, fields) {
         console.log(result);
     });
