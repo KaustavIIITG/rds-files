@@ -13,42 +13,31 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
+
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const pool = mysql.createConnection({
+const pool = mysql.createPool({
     host: 'mysqldb.cwckfvq3f8y2.us-east-2.rds.amazonaws.com',
     user: 'username',
     password: 'password',
-    port: '3306',
-});
-
-pool.connect(function(err) {
-    if (err) throw err;
-    pool.query('CREATE DATABASE IF NOT EXISTS mysqldb;', function(error, result, fields) {
-        console.log(result);
-    });
-    pool.query('USE mysqldb;');
-    pool.query('CREATE TABLE IF NOT EXISTS user(username varchar(100), password varchar(100));', function(error, result, fields) {
-        console.log(result);
-    });
-    pool.query('CREATE TABLE IF NOT EXISTS complaints(username varchar(100), complain varchar(1000));', function(error, result, fields) {
-        console.log(result);
-    });
-    pool.query('CREATE TABLE IF NOT EXISTS customercare(username varchar(100), password varchar(100));', function(error, result, fields) {
-        console.log(result);
-    });
-    pool.end();
+    database: 'mysqldb',
+    charset: 'utf8',
+    port: '3306'
 });
 
 
 function setResHtml(sql, cb) {
-    pool.connect(function(err){
+    pool.getConnection((err, con) => {
         if (err) throw err;
-        pool.query(sql, (err, res) => {
+
+        con.query(sql, (err, res, cols) => {
             if (err) throw err;
+
             return cb(res);
         });
     });
