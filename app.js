@@ -22,34 +22,30 @@ const pool = mysql.createConnection({
     host: 'mysqldb.cwckfvq3f8y2.us-east-2.rds.amazonaws.com',
     user: 'username',
     password: 'password',
-    port: 3306
+    port: '3306',
+    database: 'mysqldb'
 });
 
 pool.connect(function(err) {
     if (err) throw err;
-
-    con.query('CREATE DATABASE IF NOT EXISTS mysqldb;');
-    con.query('USE mysqldb;');
-    con.query('CREATE TABLE IF NOT EXISTS user(username varchar(100), password varchar(100));', function(error, result, fields) {
+    pool.query('CREATE TABLE IF NOT EXISTS user(username varchar(100), password varchar(100));', function(error, result, fields) {
         console.log(result);
     });
-    con.query('CREATE TABLE IF NOT EXISTS complaints(username varchar(100), complain varchar(1000));', function(error, result, fields) {
+    pool.query('CREATE TABLE IF NOT EXISTS complaints(username varchar(100), complain varchar(1000));', function(error, result, fields) {
         console.log(result);
     });
-    con.query('CREATE TABLE IF NOT EXISTS customercare(username varchar(100), password varchar(100));', function(error, result, fields) {
+    pool.query('CREATE TABLE IF NOT EXISTS customercare(username varchar(100), password varchar(100));', function(error, result, fields) {
         console.log(result);
     });
-    con.end();
+    pool.end();
 });
 
 
 function setResHtml(sql, cb) {
-    pool.getConnection((err, con) => {
+    pool.connect(function(err){
         if (err) throw err;
-
-        con.query(sql, (err, res, cols) => {
+        pool.query(sql, (err, res) => {
             if (err) throw err;
-
             return cb(res);
         });
     });
